@@ -1,7 +1,7 @@
 require 'lib/gol'
 
 t = 0
-to = 2
+to = 20
 f = Field.new(6,6)
 
 

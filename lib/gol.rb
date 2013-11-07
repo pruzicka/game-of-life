@@ -83,13 +83,10 @@ class Field
 			cell.future = 1
 		elsif status == 0
 			cell.future = 0
-		else 
-			print "status = #{status}"
-			print "alive = #{alive}, dead = #{dead}\n"
 		end
 
-		print "after set future\n"
-		print_grid_future
+		# print "after set future\n"
+		# print_grid_future
 	end
 
 	def evolve
@@ -147,10 +144,10 @@ class Field
 		i = 0
 		while i < 8
 			# print "x = #{x}, y = #{y}\n"
-			a = x - p[i][0].abs
-			b = y - p[i][1].abs
+			a = x + p[i][0]
+			b = y + p[i][1]
 			# print "a = #{a}, b = #{b}\n"
-			if a>=0 && b >=0
+			if (a >= 0 && b >= 0 && a < @dimensions[0] && b < @dimensions[1] )
 				if @grid[a][b].status == 0
 				  	dead += 1
 				elsif @grid[a][b].status == 1
