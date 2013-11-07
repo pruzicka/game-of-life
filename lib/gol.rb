@@ -307,8 +307,8 @@ class Field
 		return @grid
 	end
 
-	def changed?
-		if @current_grid != @last_grid
+	def not_changed
+		if current_grid == last_grid
 			return true
 		else
 			return false
@@ -345,30 +345,33 @@ class Game
 
 		i = 0
 
-		while !@field.all_dead? || @field.changed?
+		while !@field.all_dead? # || !@field.not_changed do
 			print "Generation #{i}\n"
 
 			@field.print_grid
-
-			# print "DEBUG\n"
-			# print "current_grid #{@field.current_grid}\n"
-			# print "last_grid    #{@field.last_grid}\n"
-			# print "#########\n"
 
 			@field.evolve
 
 			@field.age_cells
 
-
+			if @field.not_changed
+				
+				print "not changed\n"
+				break
+			end
 
 			# sleep 1
 			system ("clear")
 			i += 1
 		end
 
-		print "Generation #{i}\n"
-		@field.print_grid
-		print "All dead after #{i} generations."
+		if @field.all_dead?
+			print "Generation #{i}\n"
+			@field.print_grid
+			print "All dead after #{i} generations.\n"
+		elsif @field.not_changed
+			print "No change, no evolution\n"
+		end
 
 	end
 
