@@ -1,13 +1,81 @@
 require 'lib/gol'
 
 
+
 describe "grid" do
 	before(:each) do
 		@g = Field.new(6,6)
 	end
 
-	it "should set up future for all" do
+	it "should return true on .changed?" do
 		pending
+	end
+
+	it "have all_dead?" do
+		g = Field.new(3,3)
+		g.grid[0][0].status = 0
+		g.grid[0][1].status = 0
+		g.grid[0][2].status = 0
+		g.grid[1][0].status = 0
+		g.grid[1][1].status = 0
+		g.grid[1][2].status = 0
+		g.grid[2][0].status = 0
+		g.grid[2][1].status = 0
+		g.grid[2][2].status = 0
+
+		g.all_dead?.should eq(true)
+	end
+
+	it "should have current_grid" do
+		g = Field.new(3,3)
+		g.grid[0][0].status = 0
+		g.grid[0][1].status = 0
+		g.grid[0][2].status = 1
+		g.grid[1][0].status = 1
+		g.grid[1][1].status = 0
+		g.grid[1][2].status = 0
+		g.grid[2][0].status = 1
+		g.grid[2][1].status = 1
+		g.grid[2][2].status = 0
+
+		g.current_grid.should eq([0,0,1,1,0,0,1,1,0])
+	end
+
+	it "should have last_grid" do
+		@g.last_grid.should eq([])
+	end
+
+	it "should have valid last_grid" do
+		g = Field.new(3,3)
+		g.grid[0][0].status = 0
+		g.grid[0][1].status = 0
+		g.grid[0][2].status = 1
+		g.grid[1][0].status = 1
+		g.grid[1][1].status = 0
+		g.grid[1][2].status = 0
+		g.grid[2][0].status = 1
+		g.grid[2][1].status = 1
+		g.grid[2][2].status = 0
+
+		g.evolve	 # set future state
+		# g.age_cells  # switch future with current
+		g.last_grid.should eq([0, 0, 1, 1, 0, 0, 1, 1, 0])
+	end
+
+	it "should return number of alive and dead cells in grid" do
+		g = Field.new(3,3)
+		g.grid[0][0].status = 0
+		g.grid[0][1].status = 0
+		g.grid[0][2].status = 1
+		g.grid[1][0].status = 1
+		g.grid[1][1].status = 0
+		g.grid[1][2].status = 0
+		g.grid[2][0].status = 1
+		g.grid[2][1].status = 1
+		g.grid[2][2].status = 0
+		
+		g.status_of_grid[0].should eq(4)
+		g.status_of_grid[1].should eq(5)
 	end
 
 	it "should set up future based on neighbours(3,2), 1 alive neighbours" do
@@ -197,6 +265,14 @@ describe "cell" do
 		@dead = Cell.new(0, 3, 2)
 		@alive = Cell.new(1 ,3, 2)
 		@cell = @alive
+	end
+
+	it "alive should have status_print" do
+		@cell.status_print.should eq("x")
+	end
+
+	it "dead should have status_print" do
+		@dead.status_print.should eq(" ")
 	end
 
 	it "alive should respond to status with 1" do

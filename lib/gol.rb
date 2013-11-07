@@ -1,3 +1,8 @@
+# TODO:  generations
+# TODO: cycle should exist in the game no from outside
+# TODO: stop when all dead, stop when no movement
+# TODO: init game and cells in array or random
+
 class Cell
 	attr_accessor :future
 	attr_accessor :status
@@ -8,6 +13,13 @@ class Cell
 		@future = ""
 	end
 
+	def status_print
+		if @status == 1
+			return "x"
+		else
+			return " "
+		end
+	end
 
 	def neighbours
 		# 8 cells
@@ -60,11 +72,37 @@ end
 
 class Field
 
-
 	def initialize(x,y)
 		@dimensions = [x,y]
 		@grid = create_grid
+		@last_grid = []
 	end
+	
+	def last_grid
+		return @last_grid
+	end
+
+	def current_grid
+		@current_grid = []
+		cg = @grid.flatten
+		i = 0
+		while i < cg.length
+				@current_grid.push(cg[i].status)
+				i += 1
+		end
+		return @current_grid
+	end
+
+	def set_last_grid
+		@last_grid = []
+		 	lg = @grid.flatten
+		 	i = 0
+		 	while i < lg.length
+				@last_grid.push(lg[i].status)
+				i += 1
+		 	end
+	end
+
 
 	def  set_future(x,y)
 		cell = @grid[x][y]
@@ -101,6 +139,7 @@ class Field
 			end
 			i += 1
 		end
+		set_last_grid
 	end 
 
 
@@ -183,16 +222,37 @@ class Field
 		return sum
 	end
 
+	def status_of_grid
+		dead = 0
+		alive = 0
+		i = 0
+		g = @grid.flatten
+		while i < g.length
+			if g[i].status == 1
+				alive += 1
+			elsif g[i].status == 0
+				dead += 1
+			else
+				print "something is wrong...\n"
+			end
+			i += 1
+		end
+
+		return alive, dead
+	end
+
 	def print_grid
 		i = 0
+		print "Alive cells - #{status_of_grid[0]}, Dead cells - #{status_of_grid[1]}\n\n"
+
 		while i < @grid.size
 			j = 0
-			print "["
+			print "|"
 			while  j < @grid[i].size 
-				print " #{@grid[i][j].status} "
+				print " #{@grid[i][j].status_print} "
 			j += 1
 			end
-			print "]\n"
+			print "|\n"
 			i += 1
 		end
 	end
@@ -247,5 +307,70 @@ class Field
 		return @grid
 	end
 
+	def changed?
+		if @current_grid != @last_grid
+			return true
+		else
+			return false
+		end
+	end
+
+	def all_dead?
+		if status_of_grid[0] == 0
+			return true
+		else
+			return false
+		end
+	end
 
 end
+
+
+class Game
+
+	def initialize
+		if ARGV.empty? 
+			x = 6
+			y = 6
+		else
+			x = ARGV[0].to_i
+			y = ARGV[1].to_i
+		end
+
+		@field = Field.new(x,y)
+		@generations = 20
+	end
+	
+	def play
+
+		i = 0
+
+		while !@field.all_dead? || @field.changed?
+			print "Generation #{i}\n"
+
+			@field.print_grid
+
+			# print "DEBUG\n"
+			# print "current_grid #{@field.current_grid}\n"
+			# print "last_grid    #{@field.last_grid}\n"
+			# print "#########\n"
+
+			@field.evolve
+
+			@field.age_cells
+
+
+
+			# sleep 1
+			system ("clear")
+			i += 1
+		end
+
+		print "Generation #{i}\n"
+		@field.print_grid
+		print "All dead after #{i} generations."
+
+	end
+
+end
+
