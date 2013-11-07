@@ -81,16 +81,35 @@ class Field
 			end
 		elsif status == 0 && alive == 3
 			cell.future = 1
+		elsif status == 0
+			cell.future = 0
+		else 
+			print "status = #{status}"
+			print "alive = #{alive}, dead = #{dead}\n"
 		end
+
+		print "after set future\n"
+		print_grid_future
 	end
 
-
+	def evolve
+		x = @dimensions[0]
+		y = @dimensions[1]
+		i = 0
+		while i < x
+			j = 0
+			while j < y
+				set_future(i,j)
+				j += 1
+			end
+			i += 1
+		end
+	end 
 
 
 	def age_cells
 		x = @dimensions[0]
 		y = @dimensions[1]
-		future = ""
 		i = 0
 		while i < x
 			j = 0
@@ -127,8 +146,10 @@ class Field
 		p = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
 		i = 0
 		while i < 8
-			a = x - p[i][0] 
-			b = y - p[i][1]
+			# print "x = #{x}, y = #{y}\n"
+			a = x - p[i][0].abs
+			b = y - p[i][1].abs
+			# print "a = #{a}, b = #{b}\n"
 			if a>=0 && b >=0
 				if @grid[a][b].status == 0
 				  	dead += 1
@@ -172,6 +193,20 @@ class Field
 			print "["
 			while  j < @grid[i].size 
 				print " #{@grid[i][j].status} "
+			j += 1
+			end
+			print "]\n"
+			i += 1
+		end
+	end
+
+	def print_grid_future
+		i = 0
+		while i < @grid.size
+			j = 0
+			print "["
+			while  j < @grid[i].size 
+				print " #{@grid[i][j].future} "
 			j += 1
 			end
 			print "]\n"

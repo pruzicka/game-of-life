@@ -6,6 +6,10 @@ describe "grid" do
 		@g = Field.new(6,6)
 	end
 
+	it "should set up future for all" do
+		pending
+	end
+
 	it "should set up future based on neighbours(3,2), 1 alive neighbours" do
 		@g.grid[2][1].status = 0
 		@g.grid[2][2].status = 0
