@@ -2,7 +2,7 @@ require 'lib/gol'
 
 t = 0
 to = 20
-f = Field.new(6,6)
+f = Field.new(16,16)
 
 
 while t < to
@@ -18,5 +18,5 @@ while t < to
 	sleep 2
 	t += 1
 end
-
+print "Time is #{t}\n"
 f.print_grid
